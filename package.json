@@ -1,0 +1,24 @@
+{
+  "name": "node-tutuka",
+  "version": "0.1.0",
+  "description": "A module for accessing Tutuka's XML-RPC API",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Wow-Dev/node-tutuka.git"
+  },
+  "keywords": [
+    "tutuka",
+    "load",
+    "balance"
+  ],
+  "author": "Christian Lau <christian@wow4results.co.za>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Wow-Dev/node-tutuka/issues"
+  },
+  "homepage": "https://github.com/Wow-Dev/node-tutuka"
+}
