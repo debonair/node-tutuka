@@ -7,11 +7,10 @@ var dateFormat = require('dateformat');
  *
  * @constructor
  * @param {Object} options        - an object with fields:
- *   - {String} host              - (optional)
+ *   - {String} terminalID
+ *   - {String} host
  *   - {Number} port
- *   - {String} url               - (optional) - may be used instead of host/port pair
- *   - {Boolean} cookies          - (optional) - if true then cookies returned by server will be stored and sent back on the next calls.
- *                                  Also it will be possible to access/manipulate cookies via #setCookie/#getCookie methods
+ *   - {String} path
  * @return {Tutuka}
  */
 
@@ -19,7 +18,6 @@ function Tutuka(options){
   this.terminalID = options.terminalID;
   this.host = options.host;
   this.port = options.port;
-  this.path = options.path;
   this.path = options.path;
 
 	this.xmlrpc = xmlrpc.createClient({host: this.host, port: this.port, path: this.path});
