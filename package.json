@@ -20,5 +20,14 @@
   "bugs": {
     "url": "https://github.com/Wow-Dev/node-tutuka/issues"
   },
-  "homepage": "https://github.com/Wow-Dev/node-tutuka"
+  "homepage": "https://github.com/Wow-Dev/node-tutuka",
+  "devDependencies": {
+    "chai": "^1.10.0",
+    "mocha": "^2.1.0"
+  },
+  "dependencies": {
+    "crypto": "0.0.3",
+    "dateformat": "^1.0.11",
+    "xmlrpc": "^1.2.0"
+  }
 }
