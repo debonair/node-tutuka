@@ -28,6 +28,7 @@
   "dependencies": {
     "crypto": "0.0.3",
     "dateformat": "^1.0.11",
+    "q": "^1.1.2",
     "xmlrpc": "^1.2.0"
   }
 }
