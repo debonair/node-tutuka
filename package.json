@@ -15,7 +15,10 @@
     "load",
     "balance"
   ],
-  "author": "Christian Lau <christian@wow4results.co.za>",
+  "author": {
+    "name": "Christian Lau",
+    "email": "christian@wow4results.co.za"
+  },
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Wow-Dev/node-tutuka/issues"
@@ -30,5 +33,11 @@
     "dateformat": "^1.0.11",
     "q": "^1.1.2",
     "xmlrpc": "^1.2.0"
-  }
+  },
+  "readme": "node-tutuka\n===========\n\nA library for accessing the Tutuka XML-RPC API for node.js\n\n# Installation\n\n    npm install git+ssh://git@github.com/Wow-Dev/node-tutuka.git --save\n",
+  "readmeFilename": "README.md",
+  "_id": "node-tutuka@0.1.0",
+  "_shasum": "06ebded17d1de439e7e3f615630b93fc3e29bff6",
+  "_resolved": "git+ssh://git@github.com/Wow-Dev/node-tutuka.git#5c6d5fc4253f12745773e38ebb87459149fc64a3",
+  "_from": "node-tutuka@git+ssh://git@github.com/Wow-Dev/node-tutuka.git"
 }
