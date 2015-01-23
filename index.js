@@ -1,3 +1,4 @@
+var Q = require('q');
 var xmlrpc = require('xmlrpc');
 var crypto = require('crypto');
 var dateFormat = require('dateformat');
@@ -36,14 +37,21 @@ Tutuka.prototype.execute = function(method, arguments, callback){
 
 // Retrieve the balance of a card
 Tutuka.prototype.balance = function(profileNumber, cardNumber, transactionId, callback){
+  var deferred = Q.defer();
+
   var method = 'Balance';
   var now = new Date();
   var transactionDate = dateFormat(now, 'yyyymmdd') + 'T' + dateFormat(now, 'HH:MM:ss');
   var checksum = this.checksum(method, profileNumber, cardNumber, transactionId, transactionDate);
   var arguments = [this.terminalID, profileNumber, cardNumber, transactionId, now, checksum];
   var duh = this.execute(method, arguments, function(err, value){
-    callback(err, value);
+    if(err){
+      deferred.reject(err);
+    }
+    deferred.resolve(value);
   });
+
+  return deferred.promise;
 }
 
 // Allocate card to a user

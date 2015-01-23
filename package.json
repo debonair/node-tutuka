@@ -38,6 +38,6 @@
   "readmeFilename": "README.md",
   "_id": "node-tutuka@0.1.0",
   "_shasum": "06ebded17d1de439e7e3f615630b93fc3e29bff6",
-  "_resolved": "git+ssh://git@github.com/Wow-Dev/node-tutuka.git#5c6d5fc4253f12745773e38ebb87459149fc64a3",
+  "_resolved": "git+ssh://git@github.com/Wow-Dev/node-tutuka.git#e9f9ef3c3df63f7b396e0b28f6dfab5cbe185357",
   "_from": "node-tutuka@git+ssh://git@github.com/Wow-Dev/node-tutuka.git"
 }
