@@ -26,23 +26,37 @@ function Tutuka(config, logger){
 }
 
 
-Tutuka.prototype.checksum = function(method, profileNumber, cardNumber, transactionId, transactionDate){
-  return crypto.createHmac('sha1', this.terminalPassword).update(method + this.terminalID + profileNumber + cardNumber + transactionId + transactionDate).digest('hex');
+Tutuka.prototype.checksum = function(method, arguments){
+  if(arguments.length > 0){
+    var concat = '';
+    for(var i=0; i < arguments.length; i++){
+      concat += arguments[i];
+    }
+    var string = method + this.terminalID + concat;
+    var checksum = crypto.createHmac('sha1', this.terminalPassword).update(string).digest('hex');
+    return checksum;
+  }
+
 }
 
 Tutuka.prototype.execute = function(method, arguments, callback){
-  this.log.info({method: method, arguments: arguments});
-  this.xmlrpc.methodCall(method, arguments, callback);
+  this.xmlrpc.methodCall(method, arguments, function(err, value){
+    if(err){
+      callback(err);
+    } else {
+      callback(null, value);
+    }
+  }.bind(this));
 }
 
 // Retrieve the balance of a card
-Tutuka.prototype.balance = function(profileNumber, cardNumber, transactionId, callback){
+Tutuka.prototype.balance = function(profileNumber, cardNumber, transactionId){
   var deferred = Q.defer();
 
   var method = 'Balance';
   var now = new Date();
   var transactionDate = dateFormat(now, 'yyyymmdd') + 'T' + dateFormat(now, 'HH:MM:ss');
-  var checksum = this.checksum(method, profileNumber, cardNumber, transactionId, transactionDate);
+  var checksum = this.checksum(method, [profileNumber, cardNumber, transactionId, transactionDate]);
   var arguments = [this.terminalID, profileNumber, cardNumber, transactionId, now, checksum];
   var duh = this.execute(method, arguments, function(err, value){
     if(err){
@@ -85,8 +99,26 @@ Tutuka.prototype.transferFunds = function(){
 }
 
 // Register a new profile
-Tutuka.prototype.register = function(){
+Tutuka.prototype.register = function(emailAddress, firstName, lastName, idOrPassportNumber, contactNumber, cellphoneNumber, isCompany, vatNumber, companyName, companyCCNumber, addressLine1, addressLine2,  city, postalCode, transactionId){
+  var deferred = Q.defer();
 
+  var method = 'Register';
+  var now = new Date();
+  var transactionDate = dateFormat(now, 'yyyymmdd') + 'T' + dateFormat(now, 'HH:MM:ss');
+  var checksum = this.checksum(method, [emailAddress, this.terminalPassword, firstName, lastName, idOrPassportNumber, contactNumber, cellphoneNumber, isCompany, vatNumber, companyName, companyCCNumber, addressLine1, addressLine2,  city, postalCode, transactionId, transactionDate]);
+  var arguments = [this.terminalID, emailAddress, this.terminalPassword, firstName, lastName, idOrPassportNumber, contactNumber, cellphoneNumber, isCompany, vatNumber, companyName, companyCCNumber, addressLine1, addressLine2,  city, postalCode, transactionId, now, checksum];
+  try {
+    var duh = this.execute(method, arguments, function (err, value) {
+      if (err) {
+        console.log('rejecting');
+        deferred.reject(err);
+      }
+      deferred.resolve(value);
+    });
+  } catch(e) {
+    console.log(e);
+  }
+  return deferred.promise;
 }
 
 // Update a profile
