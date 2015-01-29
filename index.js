@@ -2,6 +2,7 @@ var Q = require('q');
 var xmlrpc = require('xmlrpc');
 var crypto = require('crypto');
 var dateFormat = require('dateformat');
+var TutukaResultFactory = rootRequire('models/TutukaResult.js');
 
 /**
  * Creates the Tutuka object to make the API calls
@@ -22,7 +23,15 @@ function Tutuka(config, logger){
   this.port = config.port;
   this.path = config.path;
   this.log = logger.child({class: 'tutuka_api'});
-  this.xmlrpc = xmlrpc.createClient({host: this.host, port: this.port, path: this.path});
+  try {
+    this.xmlrpc = xmlrpc.createClient({
+      host: this.host,
+      port: this.port,
+      path: this.path
+    });
+  } catch(e){
+    console.log(e);
+  }
 }
 
 
@@ -40,31 +49,35 @@ Tutuka.prototype.checksum = function(method, arguments){
 }
 
 Tutuka.prototype.execute = function(method, arguments, callback){
-  this.xmlrpc.methodCall(method, arguments, function(err, value){
-    if(err){
-      callback(err);
-    } else {
-      callback(null, value);
-    }
-  }.bind(this));
+  var Result = TutukaResultFactory();
+  try {
+    this.xmlrpc.methodCall(method, arguments, function (err, data) {
+      if (err) {
+        callback(err);
+      } else {
+        callback(null, data);
+      }
+    });
+  } catch(e){
+    console.log(e);
+  }
 }
 
 // Retrieve the balance of a card
 Tutuka.prototype.balance = function(profileNumber, cardNumber, transactionId){
   var deferred = Q.defer();
-
   var method = 'Balance';
   var now = new Date();
   var transactionDate = dateFormat(now, 'yyyymmdd') + 'T' + dateFormat(now, 'HH:MM:ss');
   var checksum = this.checksum(method, [profileNumber, cardNumber, transactionId, transactionDate]);
   var arguments = [this.terminalID, profileNumber, cardNumber, transactionId, now, checksum];
-  var duh = this.execute(method, arguments, function(err, value){
-    if(err){
+  var duh = this.execute(method, arguments, function (err, value) {
+    if (err) {
       deferred.reject(err);
+    } else {
+      deferred.resolve(value);
     }
-    deferred.resolve(value);
   });
-
   return deferred.promise;
 }
 
@@ -110,7 +123,6 @@ Tutuka.prototype.register = function(emailAddress, firstName, lastName, idOrPass
   try {
     var duh = this.execute(method, arguments, function (err, value) {
       if (err) {
-        console.log('rejecting');
         deferred.reject(err);
       }
       deferred.resolve(value);
