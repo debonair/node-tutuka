@@ -2,7 +2,6 @@ var Q = require('q');
 var xmlrpc = require('xmlrpc');
 var crypto = require('crypto');
 var dateFormat = require('dateformat');
-var TutukaResultFactory = rootRequire('models/TutukaResult.js');
 
 /**
  * Creates the Tutuka object to make the API calls
@@ -49,7 +48,6 @@ Tutuka.prototype.checksum = function(method, arguments){
 }
 
 Tutuka.prototype.execute = function(method, arguments, callback){
-  var Result = TutukaResultFactory();
   try {
     this.xmlrpc.methodCall(method, arguments, function (err, data) {
       if (err) {
