@@ -69,24 +69,55 @@ Tutuka.prototype.balance = function(profileNumber, cardNumber, transactionId){
   var transactionDate = dateFormat(now, 'yyyymmdd') + 'T' + dateFormat(now, 'HH:MM:ss');
   var checksum = this.checksum(method, [profileNumber, cardNumber, transactionId, transactionDate]);
   var arguments = [this.terminalID, profileNumber, cardNumber, transactionId, now, checksum];
-  var duh = this.execute(method, arguments, function (err, value) {
-    if (err) {
-      deferred.reject(err);
-    } else {
-      deferred.resolve(value);
-    }
-  });
+  try {
+    var duh = this.execute(method, arguments, function (err, value) {
+      if (err) {
+        deferred.reject(err);
+      } else {
+        deferred.resolve(value);
+      }
+    });
+  } catch(e) {
+    console.log(e);
+  }
   return deferred.promise;
 }
 
 // Allocate card to a user
-Tutuka.prototype.allocateCard = function (){
+Tutuka.prototype.allocateCard = function(profileNumber, cardIdentifier, firstName, lastName, idNumber, mobileNumber, transactionId){
+  return Q.Promise(function(resolve, reject){
 
+    var method = 'AllocateCard';
+    var now = new Date();
+    var transactionDate = dateFormat(now, 'yyyymmdd') + 'T' + dateFormat(now, 'HH:MM:ss');
+    var checksum = this.checksum(method, [profileNumber, cardIdentifier, firstName, lastName, idNumber, mobileNumber, transactionId, transactionDate]);
+    var arguments = [this.terminalID, profileNumber, cardIdentifier, firstName, lastName, idNumber, mobileNumber, transactionId, now, checksum];
+    var duh = this.execute(method, arguments, function (err, value) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(value);
+      }
+    });
+  }.bind(this))
 }
 
 // Link a card to a profile
-Tutuka.prototype.linkCard = function(){
-
+Tutuka.prototype.linkCard = function(profileNumber, cardIdentifier, transactionId){
+  return Q.Promise(function(resolve, reject){
+    var method = 'LinkCard';
+    var now = new Date();
+    var transactionDate = dateFormat(now, 'yyyymmdd') + 'T' + dateFormat(now, 'HH:MM:ss');
+    var checksum = this.checksum(method, [profileNumber, cardIdentifier, transactionId, transactionDate]);
+    var arguments = [this.terminalID, profileNumber, cardIdentifier, transactionId, now, checksum];
+    var duh = this.execute(method, arguments, function (err, value) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(value);
+      }
+    });
+  }.bind(this))
 }
 
 // Link multiple cards to a profile using a range of sequence numbers
@@ -100,8 +131,21 @@ Tutuka.prototype.deductCardLoadProfile = function(){
 }
 
 // Load a card with the requested amount and deduct from profile
-Tutuka.prototype.loadCardDeductProfile = function(){
-
+Tutuka.prototype.loadCardDeductProfile = function(profileNumber, cardIdentifier, amount, transactionId){
+  return Q.Promise(function(resolve, reject){
+    var method = 'LoadCardDeductProfile';
+    var now = new Date();
+    var transactionDate = dateFormat(now, 'yyyymmdd') + 'T' + dateFormat(now, 'HH:MM:ss');
+    var checksum = this.checksum(method, [profileNumber, cardIdentifier, amount, transactionId, transactionDate]);
+    var arguments = [this.terminalID, profileNumber, cardIdentifier, amount, transactionId, now, checksum];
+    var duh = this.execute(method, arguments, function (err, value) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(value);
+      }
+    });
+  }.bind(this))
 }
 
 // Transfer funds from one card to another
