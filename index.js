@@ -49,6 +49,7 @@ Tutuka.prototype.checksum = function(method, arguments){
 
 Tutuka.prototype.execute = function(method, arguments, callback){
   try {
+    this.log.info({"method" : method, "arguments" : arguments});
     this.xmlrpc.methodCall(method, arguments, function (err, data) {
       if (err) {
         callback(err);
@@ -126,8 +127,21 @@ Tutuka.prototype.linkCardsBySequenceRange = function(){
 }
 
 // Deduct amount from card and load profile
-Tutuka.prototype.deductCardLoadProfile = function(){
-
+Tutuka.prototype.deductCardLoadProfile = function(profileNumber, cardIdentifier, amount, transactionId){
+  return Q.Promise(function(resolve, reject){
+    var method = 'DeductCardLoadProfile';
+    var now = new Date();
+    var transactionDate = dateFormat(now, 'yyyymmdd') + 'T' + dateFormat(now, 'HH:MM:ss');
+    var checksum = this.checksum(method, [profileNumber, cardIdentifier, amount, transactionId, transactionDate]);
+    var arguments = [this.terminalID, profileNumber, cardIdentifier, amount, transactionId, now, checksum];
+    var duh = this.execute(method, arguments, function (err, value) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(value);
+      }
+    });
+  }.bind(this))
 }
 
 // Load a card with the requested amount and deduct from profile
