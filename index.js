@@ -121,6 +121,60 @@ Tutuka.prototype.linkCard = function(profileNumber, cardIdentifier, transactionI
   }.bind(this))
 }
 
+// Stop a card
+Tutuka.prototype.stopCard = function(profileNumber, cardIdentifier, stopReasonId, transactionId){
+  return Q.Promise(function(resolve, reject){
+    var method = 'StopCard';
+    var now = new Date();
+    var transactionDate = dateFormat(now, 'yyyymmdd') + 'T' + dateFormat(now, 'HH:MM:ss');
+    var checksum = this.checksum(method, [profileNumber, cardIdentifier, stopReasonId, transactionId, transactionDate]);
+    var arguments = [this.terminalID, profileNumber, cardIdentifier, stopReasonId, transactionId, now, checksum];
+    var duh = this.execute(method, arguments, function (err, value) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(value);
+      }
+    });
+  }.bind(this))
+}
+
+// Transfer funds from one card to another
+Tutuka.prototype.transferFunds = function(profileNumber, cardIdentifierFrom, cardIdentifierTo, amount, transactionId){
+  return Q.Promise(function(resolve, reject){
+    var method = 'TransferFunds';
+    var now = new Date();
+    var transactionDate = dateFormat(now, 'yyyymmdd') + 'T' + dateFormat(now, 'HH:MM:ss');
+    var checksum = this.checksum(method, [profileNumber, cardIdentifierFrom, cardIdentifierTo, amount, transactionId, transactionDate]);
+    var arguments = [this.terminalID, profileNumber, cardIdentifierFrom, cardIdentifierTo, amount, transactionId, now, checksum];
+    var duh = this.execute(method, arguments, function (err, value) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(value);
+      }
+    });
+  }.bind(this))
+}
+
+// Stop a card
+Tutuka.prototype.cancelStopCard = function(profileNumber, cardIdentifier, transactionId){
+  return Q.Promise(function(resolve, reject){
+    var method = 'CancelStopCard';
+    var now = new Date();
+    var transactionDate = dateFormat(now, 'yyyymmdd') + 'T' + dateFormat(now, 'HH:MM:ss');
+    var checksum = this.checksum(method, [profileNumber, cardIdentifier, transactionId, transactionDate]);
+    var arguments = [this.terminalID, profileNumber, cardIdentifier, transactionId, now, checksum];
+    var duh = this.execute(method, arguments, function (err, value) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(value);
+      }
+    });
+  }.bind(this))
+}
+
 // Link multiple cards to a profile using a range of sequence numbers
 Tutuka.prototype.linkCardsBySequenceRange = function(){
 
@@ -160,11 +214,6 @@ Tutuka.prototype.loadCardDeductProfile = function(profileNumber, cardIdentifier,
       }
     });
   }.bind(this))
-}
-
-// Transfer funds from one card to another
-Tutuka.prototype.transferFunds = function(){
-
 }
 
 // Register a new profile
@@ -208,11 +257,6 @@ Tutuka.prototype.activate = function(){
 
 }
 
-// Stop a card
-Tutuka.prototype.stopCard = function(){
-
-}
-
 // Updates the cellphone or id number linked to a card
 Tutuka.prototype.updateAllocatedCard = function(){
 
@@ -220,11 +264,6 @@ Tutuka.prototype.updateAllocatedCard = function(){
 
 // Retrieves the current status of a card
 Tutuka.prototype.status = function(){
-
-}
-
-// Un-stop a card
-Tutuka.prototype.cancelStopCard = function(){
 
 }
 
