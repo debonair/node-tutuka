@@ -21,7 +21,7 @@ function Tutuka(config, logger){
   this.host = config.host;
   this.port = config.port;
   this.path = config.path;
-  this.log = logger.child({class: 'tutuka_api'});
+  this.log = logger;
   try {
     this.xmlrpc = xmlrpc.createClient({
       host: this.host,
