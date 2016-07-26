@@ -244,10 +244,6 @@ Tutuka.prototype.updateProfile = function(){
 }
 
 // Get the full statement of a card
-Tutuka.prototype.statement = function(){
-}
-
-// Get the full statement of a card
 Tutuka.prototype.Statement = function(profileNumber, cardNumber, transactionId){
   var deferred = Q.defer();
   var method = 'Statement';
