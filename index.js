@@ -247,9 +247,26 @@ Tutuka.prototype.updateProfile = function(){
 Tutuka.prototype.statement = function(){
 }
 
-// Get the statement for a date range
-Tutuka.prototype.statementByDateRange = function(){
-
+// Get the full statement of a card
+Tutuka.prototype.Statement = function(profileNumber, cardNumber, transactionId){
+  var deferred = Q.defer();
+  var method = 'Statement';
+  var now = new Date();
+  var transactionDate = dateFormat(now, 'yyyymmdd') + 'T' + dateFormat(now, 'HH:MM:ss');
+  var checksum = this.checksum(method, [profileNumber, cardNumber, transactionId, transactionDate]);
+  var arguments = [this.terminalID, profileNumber, cardNumber, transactionId, now, checksum];
+  try {
+    var duh = this.execute(method, arguments, function (err, value) {
+      if (err) {
+        deferred.reject(err);
+      } else {
+        deferred.resolve(value);
+      }
+    });
+  } catch(e) {
+    console.log(e);
+  }
+  return deferred.promise;
 }
 
 // Activate a card
