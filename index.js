@@ -23,7 +23,7 @@ function Tutuka(config, logger){
   this.path = config.path;
   this.log = logger;
   try {
-    this.xmlrpc = xmlrpc.createClient({
+    this.xmlrpc = xmlrpc.createSecureClient({
       host: this.host,
       port: this.port,
       path: this.path
@@ -61,6 +61,33 @@ Tutuka.prototype.execute = function(method, arguments, callback){
     console.log(e);
   }
 }
+
+//Create a virtual card
+
+Tutuka.prototype.createVirtualCard = function (campaignUUID, reference, cardLabel, cellphoneNumber, expiryDate, transactionId) {
+  var deferred = Q.defer();
+  var method = 'CreateVirtualCard';
+  var now = new Date();
+  var transactionDate = dateFormat(now, 'yyyymmdd') + 'T' + dateFormat(now, 'HH:MM:ss');
+  var expiryDateFormat = dateFormat(expiryDate, 'yyyymmdd') + 'T' + dateFormat(expiryDate, 'HH:MM:ss');
+
+  var checksum = this.checksum(method, [campaignUUID, reference, cardLabel, cellphoneNumber, expiryDateFormat, transactionId, transactionDate]);
+  var arguments = [this.terminalID, campaignUUID, reference, cardLabel, cellphoneNumber, expiryDate, transactionId, now, checksum];
+  try {
+    var duh = this.execute(method, arguments, function (err, value) {
+      if (err) {
+         deferred.reject(err);
+      } else {
+         deferred.resolve(value);
+      }
+    });
+  } catch(e) {
+    console.log(e);
+  }
+  return deferred.promise;
+}
+
+
 
 // Retrieve the balance of a card
 Tutuka.prototype.balance = function(profileNumber, cardNumber, transactionId){
